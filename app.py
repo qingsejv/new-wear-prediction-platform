@@ -14,7 +14,7 @@ BASE_DIR = Path(__file__).resolve().parent
 MODEL_PATH = BASE_DIR / "models" / "friction_wear_model.joblib"
 
 PLATFORM_NAME = "AI驱动双辊薄带连铸镀层智能预测系统"
-SUBTITLE = "神经材料智能 · 面向镀铬层摩擦磨损行为的小样本推理、低碳工况分析与节能减排优化"
+SUBTITLE = "面向镀铬层摩擦磨损行为的小样本推理、低碳工况分析与节能减排优化"
 
 st.set_page_config(
     page_title=PLATFORM_NAME,
@@ -136,11 +136,11 @@ FEATURE_DISPLAY_NAMES = {
 }
 
 FEATURE_CHART_NAMES = {
-    "温度 ℃": "Temperature (°C)",
-    "磨损载荷 N": "Rolling force (N)",
-    "磨损载荷 kN": "Rolling force (kN)",
-    "镀层实际厚度 μm": "Initial coating thickness (μm)",
-    "粗糙度Rz μm": "Surface roughness (μm)",
+    "温度 ℃": "温度（℃）",
+    "磨损载荷 N": "铸轧力（N）",
+    "磨损载荷 kN": "铸轧力（kN）",
+    "镀层实际厚度 μm": "初始镀层厚度（μm）",
+    "粗糙度Rz μm": "表面粗糙度（μm）",
 }
 
 
@@ -211,7 +211,7 @@ def tight_y_limits(values, current_value=None, target_name=""):
     data_max = float(np.max(finite))
     center = float(np.mean(finite))
     span = data_max - data_min
-    if "Friction" in target_name:
+    if "摩擦系数" in target_name:
         minimum_span = max(abs(center) * 0.0025, 0.003)
     else:
         minimum_span = max(abs(center) * 0.012, 0.02)
@@ -238,6 +238,12 @@ st.markdown(
 }
 
 html{scroll-behavior:smooth;}
+html,body,.stApp,[class*="css"]{
+  font-family:"Microsoft YaHei","PingFang SC","Noto Sans CJK SC","Source Han Sans SC","Hiragino Sans GB",Arial,sans-serif;
+  font-synthesis:none;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
 .stApp{
   background:
     radial-gradient(circle at 83% 0%, rgba(67,139,255,.12), transparent 27rem),
@@ -268,16 +274,12 @@ html{scroll-behavior:smooth;}
   background:linear-gradient(135deg,var(--violet),var(--cyan));
   box-shadow:0 10px 25px rgba(53,117,255,.26);
 }
-.brand-cn{font-weight:900;font-size:1.05rem;letter-spacing:-.02em;}
+.brand-cn{font-weight:800;font-size:1.05rem;letter-spacing:0;}
 .brand-en{font-size:.67rem;color:#8a93a3;letter-spacing:.09em;margin-top:2px;}
 .topnav{display:flex;gap:26px;align-items:center;flex:1;}
 .topnav a{color:#434a57;text-decoration:none;font-size:.92rem;font-weight:700;}
 .topnav a:hover{color:var(--primary);}
-.search-box{
-  flex:0 1 360px;height:42px;border:1px solid #dfe6f2;border-radius:4px;
-  display:flex;align-items:center;padding:0 14px;color:#9ba4b3;background:#fff;
-}
-.nav-actions{display:flex;gap:9px;align-items:center;}
+.nav-actions{display:flex;gap:9px;align-items:center;margin-left:auto;}
 .nav-chip{
   padding:10px 15px;border-radius:8px;font-size:.82rem;font-weight:800;
   background:#f6f8fc;color:#596170;border:1px solid #edf0f6;
@@ -319,9 +321,17 @@ html{scroll-behavior:smooth;}
   font-size:.74rem;font-weight:900;letter-spacing:.08em;
 }
 .eyebrow-dot{width:8px;height:8px;border-radius:50%;background:#487bff;box-shadow:0 0 0 5px rgba(72,123,255,.13);}
-.hero h1{
-  margin:18px 0 15px;max-width:820px;
-  font-size:3rem;line-height:1.12;letter-spacing:-.055em;font-weight:950;color:#191d27;
+.hero-title{
+  margin:18px 0 15px;
+  max-width:920px;
+  font-size:clamp(2.25rem,2.65vw,2.75rem);
+  line-height:1.22;
+  letter-spacing:0;
+  font-weight:800;
+  color:#191d27;
+  word-break:keep-all;
+  overflow-wrap:normal;
+  text-shadow:none;
 }
 .hero p{max-width:800px;color:#70798a;font-size:1rem;line-height:1.85;margin:0;}
 .hero-actions{display:flex;gap:14px;margin-top:28px;}
@@ -365,7 +375,7 @@ html{scroll-behavior:smooth;}
   margin:58px 0 28px;
   display:grid;grid-template-columns:1.05fr .95fr;gap:34px;align-items:end;
 }
-.main-intro h2{font-size:2.45rem;line-height:1.27;letter-spacing:-.045em;margin:0;color:#191d25;}
+.main-intro h2{font-size:2.45rem;line-height:1.32;letter-spacing:0;margin:0;color:#191d25;font-weight:800;}
 .main-intro p{margin:0;color:#7e8797;line-height:1.75;font-size:.94rem;}
 
 .section-anchor{scroll-margin-top:90px;}
@@ -380,6 +390,24 @@ html{scroll-behavior:smooth;}
   background:#fff;border:1px solid #e8edf5;border-radius:18px;padding:24px;
   box-shadow:0 12px 36px rgba(39,62,98,.075);
 }
+
+/* Streamlit 原生带边框容器：内容会真实位于白框内部，不再产生空白卡片 */
+div[data-testid="stVerticalBlockBorderWrapper"]{
+  background:#ffffff !important;
+  border:1px solid #e8edf5 !important;
+  border-radius:18px !important;
+  box-shadow:0 12px 36px rgba(39,62,98,.075) !important;
+  padding:1.15rem 1.15rem .95rem !important;
+}
+div[data-testid="stVerticalBlockBorderWrapper"] > div{
+  background:transparent !important;
+}
+div[data-testid="stVerticalBlockBorderWrapper"] h4{
+  color:#1d222c;
+  font-weight:800;
+  letter-spacing:0;
+}
+
 .soft-card{
   background:linear-gradient(180deg,#f9fbff,#fff);border:1px solid #e6edf8;border-radius:17px;padding:20px;
 }
@@ -432,12 +460,12 @@ button[kind="secondary"]{border-radius:10px!important;background:#fff!important;
 .footer{text-align:center;color:#a0a7b2;font-size:.72rem;margin-top:32px;padding:22px 0 10px;border-top:1px solid #e7ebf2;}
 
 @media(max-width:1120px){
-  .search-box{display:none}.brand{min-width:250px}.promo-row{grid-template-columns:repeat(2,1fr)}
+  .brand{min-width:250px}.promo-row{grid-template-columns:repeat(2,1fr)}
   .promo-item:nth-child(3){border-left:0;border-top:1px solid #edf1f7}.promo-item:nth-child(4){border-top:1px solid #edf1f7}
 }
 @media(max-width:900px){
   .topnav,.nav-chip{display:none}.topbar{justify-content:space-between}
-  .hero{grid-template-columns:1fr;padding:34px 24px}.hero h1{font-size:2.25rem}.hero-visual{display:none}
+  .hero{grid-template-columns:1fr;padding:34px 24px}.hero-title{font-size:2.25rem}.hero-visual{display:none}
   .main-intro{grid-template-columns:1fr}.main-intro h2{font-size:2rem}
 }
 @media(max-width:640px){
@@ -459,7 +487,7 @@ st.markdown(
     <div class="brand-mark">AI</div>
     <div>
       <div class="brand-cn">材料智能预测平台</div>
-      <div class="brand-en">MATERIALS INTELLIGENCE CLOUD</div>
+      <div class="brand-en">材料智能云平台</div>
     </div>
   </div>
   <div class="topnav">
@@ -468,7 +496,6 @@ st.markdown(
     <a href="#trend-analysis">趋势分析</a>
     <a href="#result-export">结果导出</a>
   </div>
-  <div class="search-box">搜索模型、工况或分析能力</div>
   <div class="nav-actions">
     <span class="nav-chip">文档</span>
     <span class="nav-chip">控制台</span>
@@ -478,19 +505,19 @@ st.markdown(
 <div id="overview" class="hero-shell section-anchor">
   <div class="hero">
     <div class="hero-copy">
-      <div class="eyebrow"><span class="eyebrow-dot"></span> AI MATERIALS INTELLIGENCE · GREEN MANUFACTURING</div>
-      <h1>{PLATFORM_NAME}</h1>
+      <div class="eyebrow"><span class="eyebrow-dot"></span> AI 材料智能 · 绿色制造</div>
+      <div class="hero-title">{PLATFORM_NAME}</div>
       <p>{SUBTITLE}</p>
       <div class="hero-actions">
-        <a class="hero-btn primary" href="#ai-workbench">立即开始预测　↗</a>
+        <a class="hero-btn primary" href="#ai-workbench">立即开始预测　→</a>
         <a class="hero-btn secondary" href="#trend-analysis">查看响应趋势</a>
       </div>
     </div>
     <div class="hero-visual">
       <div class="visual-panel">
         <div class="visual-top">
-          <span class="visual-title">REAL-TIME AI INFERENCE</span>
-          <span class="live">● ONLINE</span>
+          <span class="visual-title">AI 实时推理</span>
+          <span class="live">● 在线</span>
         </div>
         <div class="visual-chart">
           <div class="bar" style="height:39%"></div><div class="bar" style="height:58%"></div>
@@ -499,9 +526,9 @@ st.markdown(
           <div class="bar" style="height:82%"></div>
         </div>
         <div class="visual-grid">
-          <div class="visual-kpi"><span>Feature Vector</span><b>{len(feature_cols)}D</b></div>
-          <div class="visual-kpi"><span>Inference Mode</span><b>实时</b></div>
-          <div class="visual-kpi"><span>Model Status</span><b>在线</b></div>
+          <div class="visual-kpi"><span>特征向量</span><b>{len(feature_cols)}D</b></div>
+          <div class="visual-kpi"><span>推理模式</span><b>实时</b></div>
+          <div class="visual-kpi"><span>模型状态</span><b>在线</b></div>
         </div>
       </div>
     </div>
@@ -521,14 +548,14 @@ st.markdown(
 
 <div class="info-strip">
   <div>
-    <div class="info-title">AI + Green Manufacturing</div>
+    <div class="info-title">AI + 绿色制造</div>
     <div class="info-desc">以模型预测辅助低碳工况筛选、节能减排分析与实验决策。</div>
   </div>
   <div class="info-badges">
-    <span class="info-badge">CO₂ Reduction</span>
-    <span class="info-badge">Energy Saving</span>
-    <span class="info-badge">Material Efficiency</span>
-    <span class="info-badge">Green Process</span>
+    <span class="info-badge">碳排辅助优化</span>
+    <span class="info-badge">节能分析</span>
+    <span class="info-badge">材料利用率</span>
+    <span class="info-badge">绿色工艺</span>
   </div>
 </div>
 """,
@@ -541,7 +568,7 @@ st.markdown(
     """
 <div class="section-head">
   <div><h3>AI 智能预测工作台</h3><p>配置材料工况参数，构建特征向量并由模型实时生成多目标预测。</p></div>
-  <span class="section-tag">REAL-TIME INFERENCE</span>
+  <span class="section-tag">实时推理</span>
 </div>
 """,
     unsafe_allow_html=True,
@@ -550,51 +577,50 @@ st.markdown(
 left, middle, right = st.columns([1.12, 0.84, 0.92], gap="large")
 
 with left:
-    st.markdown('<div class="white-card">', unsafe_allow_html=True)
-    st.markdown("#### 工况特征输入")
-    st.caption("温度、铸轧力、镀层厚度与粗糙度共同构成当前模型输入。")
+    with st.container(border=True):
+        st.markdown("#### 工况特征输入")
+        st.caption("温度、铸轧力、镀层厚度与粗糙度共同构成当前模型输入。")
 
-    input_values = {}
-    for col in feature_cols:
-        vmin, vmax, vdef, step = default_range(col)
-        slider_key, num_key = widget_keys(col)
+        input_values = {}
+        for col in feature_cols:
+            vmin, vmax, vdef, step = default_range(col)
+            slider_key, num_key = widget_keys(col)
 
-        if slider_key not in st.session_state:
-            st.session_state[slider_key] = float(vdef)
-        if num_key not in st.session_state:
-            st.session_state[num_key] = float(vdef)
+            if slider_key not in st.session_state:
+                st.session_state[slider_key] = float(vdef)
+            if num_key not in st.session_state:
+                st.session_state[num_key] = float(vdef)
 
-        slider_col, num_col = st.columns([0.72, 0.28])
-        with slider_col:
-            st.slider(
-                display_feature_name(col),
-                min_value=float(vmin),
-                max_value=float(vmax),
-                step=float(step),
-                key=slider_key,
-                on_change=sync_num_from_slider,
-                args=(col,),
-            )
-        with num_col:
-            st.number_input(
-                "数值",
-                min_value=float(vmin),
-                max_value=float(vmax),
-                step=float(step),
-                key=num_key,
-                label_visibility="collapsed",
-                on_change=sync_slider_from_num,
-                args=(col,),
-                format="%.2f",
-            )
-        input_values[col] = float(st.session_state[num_key])
+            slider_col, num_col = st.columns([0.72, 0.28])
+            with slider_col:
+                st.slider(
+                    display_feature_name(col),
+                    min_value=float(vmin),
+                    max_value=float(vmax),
+                    step=float(step),
+                    key=slider_key,
+                    on_change=sync_num_from_slider,
+                    args=(col,),
+                )
+            with num_col:
+                st.number_input(
+                    "数值",
+                    min_value=float(vmin),
+                    max_value=float(vmax),
+                    step=float(step),
+                    key=num_key,
+                    label_visibility="collapsed",
+                    on_change=sync_slider_from_num,
+                    args=(col,),
+                    format="%.2f",
+                )
+            input_values[col] = float(st.session_state[num_key])
 
-    button_a, button_b = st.columns([0.64, 0.36])
-    with button_a:
-        st.button("启动 AI 推理", type="primary", use_container_width=True)
-    with button_b:
-        st.button("重置特征", use_container_width=True, on_click=reset_inputs)
-    st.markdown("</div>", unsafe_allow_html=True)
+        button_a, button_b = st.columns([0.64, 0.36])
+        with button_a:
+            st.button("启动 AI 推理", type="primary", use_container_width=True)
+        with button_b:
+            st.button("重置特征", use_container_width=True, on_click=reset_inputs)
 
 input_df = pd.DataFrame({c: [input_values[c]] for c in feature_cols})
 
@@ -622,79 +648,78 @@ current_thickness = (
 )
 
 with middle:
-    st.markdown('<div class="white-card">', unsafe_allow_html=True)
-    st.markdown("#### 实时推理结果")
-    st.caption("模型随当前特征向量自动刷新预测。")
+    with st.container(border=True):
+        st.markdown("#### 实时推理结果")
+        st.caption("模型随当前特征向量自动刷新预测。")
 
-    if pred_wear is not None:
-        st.markdown(
-            f"""
+        if pred_wear is not None:
+            st.markdown(
+                f"""
 <div class="metric-card wear">
   <div class="metric-label">已磨损深度</div>
   <div class="metric-value">{pred_wear:.4f}</div>
-  <div class="metric-sub">单位：μm · AI Wear Core 输出</div>
+  <div class="metric-sub">单位：μm · 磨损预测模型实时输出</div>
 </div>
 """,
-            unsafe_allow_html=True,
-        )
-    else:
-        st.warning("未检测到可用的磨损预测模型。")
+                unsafe_allow_html=True,
+            )
+        else:
+            st.warning("未检测到可用的磨损预测模型。")
 
-    st.write("")
-    if current_thickness is not None:
-        st.markdown(
-            f"""
+        st.write("")
+        if current_thickness is not None:
+            st.markdown(
+                f"""
 <div class="metric-card thickness">
   <div class="metric-label">当前镀层厚度</div>
   <div class="metric-value">{current_thickness:.4f}</div>
-  <div class="metric-sub">初始厚度 {initial_thickness:.2f} μm - 已磨损深度</div>
+  <div class="metric-sub">初始厚度 {initial_thickness:.2f} μm − 已磨损深度</div>
 </div>
 """,
-            unsafe_allow_html=True,
-        )
-    else:
-        st.warning("无法计算当前镀层厚度。")
+                unsafe_allow_html=True,
+            )
+            if current_thickness < 0:
+                st.warning("当前镀层厚度小于 0，请检查输入厚度或模型输出范围。")
+        else:
+            st.warning("无法计算当前镀层厚度。")
 
-    st.write("")
-    if pred_friction is not None:
-        st.markdown(
-            f"""
+        st.write("")
+        if pred_friction is not None:
+            st.markdown(
+                f"""
 <div class="metric-card friction">
   <div class="metric-label">平均摩擦系数</div>
   <div class="metric-value">{pred_friction:.4f}</div>
-  <div class="metric-sub">由 AI Friction Core 实时推理</div>
+  <div class="metric-sub">由摩擦系数预测模型实时推理</div>
 </div>
+""",
+                unsafe_allow_html=True,
+            )
+        else:
+            st.error("预测失败，请检查模型和输入特征是否匹配。")
+            if predict_error:
+                st.caption(str(predict_error))
+
+with right:
+    with st.container(border=True):
+        st.markdown("#### AI 模型中枢")
+        st.caption("展示当前模型结构、特征空间与运行状态。")
+        st.markdown(
+            f"""
+<div class="summary-row"><span>预测任务</span><b>多目标材料性能预测</b></div>
+<div class="summary-row"><span>摩擦系数模型</span><b>{FRICTION_MODEL_NAME}</b></div>
+<div class="summary-row"><span>磨损深度模型</span><b>{WEAR_MODEL_NAME}</b></div>
+<div class="summary-row"><span>特征空间</span><b>{len(feature_cols)} 维工况向量</b></div>
+<div class="summary-row"><span>推理模式</span><b>实时推理</b></div>
+<div class="summary-row"><span>引擎状态</span><b class="model-status"><span class="status-dot"></span>在线</b></div>
 """,
             unsafe_allow_html=True,
         )
-    else:
-        st.error("预测失败，请检查模型和输入特征是否匹配。")
-        if predict_error:
-            st.caption(str(predict_error))
-
-    st.markdown("</div>", unsafe_allow_html=True)
-
-with right:
-    st.markdown('<div class="white-card">', unsafe_allow_html=True)
-    st.markdown("#### AI 模型中枢")
-    st.caption("展示当前模型结构、特征空间与运行状态。")
-    st.markdown(
-        f"""
-<div class="summary-row"><span>AI Task</span><b>多目标材料性能预测</b></div>
-<div class="summary-row"><span>Friction Core</span><b>{FRICTION_MODEL_NAME}</b></div>
-<div class="summary-row"><span>Wear Core</span><b>{WEAR_MODEL_NAME}</b></div>
-<div class="summary-row"><span>Feature Space</span><b>{len(feature_cols)}D 工况向量</b></div>
-<div class="summary-row"><span>Inference Mode</span><b>REAL-TIME</b></div>
-<div class="summary-row"><span>Engine Status</span><b class="model-status"><span class="status-dot"></span>ONLINE</b></div>
-""",
-        unsafe_allow_html=True,
-    )
-    st.write("")
-    st.markdown(
-        '<div class="small-note">模型输出属于已有实验数据分布内的小样本机器学习推理结果，不等同于新的实验测量值。用于论文、工况筛选和节能分析时，建议结合代表性实验进行验证。</div>',
-        unsafe_allow_html=True,
-    )
-    st.markdown("</div>", unsafe_allow_html=True)
+        st.write("")
+        st.markdown(
+            '<div class="small-note">模型输出属于已有实验数据分布内的小样本机器学习推理结果，不等同于新的实验测量值。用于论文展示、工况筛选和节能分析时，建议结合代表性实验进行验证。</div>',
+            unsafe_allow_html=True,
+        )
 
 # ---------------- Trend chart ----------------
 st.write("")
@@ -703,7 +728,7 @@ st.markdown(
     """
 <div class="section-head">
   <div><h3>单因素响应趋势分析</h3><p>保持其他变量不变，扫描单个工况参数对模型输出的影响。</p></div>
-  <span class="section-tag">Y-AXIS ZOOM</span>
+  <span class="section-tag">纵轴局部放大</span>
 </div>
 """,
     unsafe_allow_html=True,
@@ -712,152 +737,174 @@ st.markdown(
 chart_col, snapshot_col = st.columns([1.28, 0.72], gap="large")
 
 with chart_col:
-    st.markdown('<div class="white-card">', unsafe_allow_html=True)
-    st.markdown(
-        '<div class="chart-note"><b>Display rule:</b> The Y-axis automatically zooms to the current prediction range. This changes only the visible scale, not the model output.</div>',
-        unsafe_allow_html=True,
-    )
-
-    control_a, control_b = st.columns([0.58, 0.42])
-    with control_a:
-        selected_feature = st.selectbox(
-            "选择扫描特征",
-            feature_cols,
-            format_func=display_feature_name,
-        )
-    with control_b:
-        target_options = ["Average friction coefficient"]
-        if wear_model is not None:
-            target_options.append("Wear depth")
-        selected_target = st.selectbox("选择 AI 输出节点", target_options)
-
-    vmin, vmax, _, _ = default_range(selected_feature)
-    grid = np.linspace(vmin, vmax, 80)
-    trend_df = pd.concat([input_df] * len(grid), ignore_index=True)
-    trend_df[selected_feature] = grid
-
-    try:
-        if selected_target == "Wear depth" and wear_model is not None:
-            trend_model = wear_model
-            current_prediction = pred_wear
-            y_label = "Wear depth (μm)"
-            curve_label = "Predicted wear depth"
-        else:
-            trend_model = friction_model
-            current_prediction = pred_friction
-            y_label = "Average friction coefficient"
-            curve_label = "Predicted friction coefficient"
-
-        preds = np.ravel(trend_model.predict(trend_df)).astype(float)
-        y_lower, y_upper = tight_y_limits(preds, current_prediction, selected_target)
-
-        fig, ax = plt.subplots(figsize=(9.2, 4.5))
-        fig.patch.set_facecolor("#ffffff")
-        ax.set_facecolor("#ffffff")
-
-        ax.plot(grid, preds, linewidth=8, alpha=.08, color="#4f71ff")
-        ax.plot(grid, preds, linewidth=2.7, color="#3f6ff5", label=curve_label)
-        ax.fill_between(grid, y_lower, preds, color="#6d78ff", alpha=.08)
-
-        marker_indices = np.linspace(0, len(grid) - 1, 10, dtype=int)
-        ax.scatter(
-            grid[marker_indices],
-            preds[marker_indices],
-            s=20,
-            color="#38a4f5",
-            edgecolors="#ffffff",
-            linewidths=.6,
-            zorder=4,
+    with st.container(border=True):
+        st.markdown(
+            '<div class="chart-note"><b>显示说明：</b>纵轴会根据当前预测区间自动缩放，仅放大观察趋势，不改变模型预测数据。</div>',
+            unsafe_allow_html=True,
         )
 
-        if current_prediction is not None:
+        control_a, control_b = st.columns([0.58, 0.42])
+        with control_a:
+            selected_feature = st.selectbox(
+                "选择扫描特征",
+                feature_cols,
+                format_func=display_feature_name,
+            )
+        with control_b:
+            target_options = ["平均摩擦系数"]
+            if wear_model is not None:
+                target_options.append("已磨损深度")
+            selected_target = st.selectbox("选择预测目标", target_options)
+
+        vmin, vmax, _, _ = default_range(selected_feature)
+        grid = np.linspace(vmin, vmax, 80)
+        trend_df = pd.concat([input_df] * len(grid), ignore_index=True)
+        trend_df[selected_feature] = grid
+
+        try:
+            if selected_target == "已磨损深度" and wear_model is not None:
+                trend_model = wear_model
+                current_prediction = pred_wear
+                y_label = "已磨损深度（μm）"
+                curve_label = "预测已磨损深度"
+            else:
+                trend_model = friction_model
+                current_prediction = pred_friction
+                y_label = "平均摩擦系数"
+                curve_label = "预测平均摩擦系数"
+
+            preds = np.ravel(trend_model.predict(trend_df)).astype(float)
+            y_lower, y_upper = tight_y_limits(preds, current_prediction, selected_target)
+
+            fig, ax = plt.subplots(figsize=(9.2, 4.5))
+            fig.patch.set_facecolor("#ffffff")
+            ax.set_facecolor("#ffffff")
+
+            ax.plot(grid, preds, linewidth=8, alpha=.08, color="#4f71ff")
+            ax.plot(grid, preds, linewidth=2.7, color="#3f6ff5", label=curve_label)
+            ax.fill_between(grid, y_lower, preds, color="#6d78ff", alpha=.08)
+
+            marker_indices = np.linspace(0, len(grid) - 1, 10, dtype=int)
             ax.scatter(
-                [input_df[selected_feature].iloc[0]],
-                [current_prediction],
-                s=90,
-                color="#7b5cf4",
+                grid[marker_indices],
+                preds[marker_indices],
+                s=20,
+                color="#38a4f5",
                 edgecolors="#ffffff",
-                linewidths=1.2,
-                zorder=5,
-                label="Current operating point",
+                linewidths=.6,
+                zorder=4,
             )
 
-        ax.set_ylim(y_lower, y_upper)
-        ax.margins(x=.025)
-        ax.ticklabel_format(axis="y", style="plain", useOffset=False)
-        ax.yaxis.set_major_locator(MaxNLocator(nbins=6))
-        ax.yaxis.set_major_formatter(
-            FormatStrFormatter("%.4f" if selected_target == "Average friction coefficient" else "%.3f")
-        )
+            if current_prediction is not None:
+                ax.scatter(
+                    [input_df[selected_feature].iloc[0]],
+                    [current_prediction],
+                    s=90,
+                    color="#7b5cf4",
+                    edgecolors="#ffffff",
+                    linewidths=1.2,
+                    zorder=5,
+                    label="当前工况点",
+                )
 
-        ax.set_xlabel(chart_feature_name(selected_feature), color="#566174", labelpad=10)
-        ax.set_ylabel(y_label, color="#566174", labelpad=10)
-        ax.set_title(f"Single-factor response · {selected_target}", color="#212633", pad=14, fontweight="bold")
+            ax.set_ylim(y_lower, y_upper)
+            ax.margins(x=.025)
+            ax.ticklabel_format(axis="y", style="plain", useOffset=False)
+            ax.yaxis.set_major_locator(MaxNLocator(nbins=6))
+            ax.yaxis.set_major_formatter(
+                FormatStrFormatter("%.4f" if selected_target == "平均摩擦系数" else "%.3f")
+            )
 
-        ax.grid(axis="y", alpha=.55, color="#e4eaf3", linestyle="--", linewidth=.8)
-        ax.grid(axis="x", alpha=.3, color="#eef2f7", linestyle=":", linewidth=.7)
-        ax.tick_params(colors="#778296", labelsize=9)
-        for spine in ax.spines.values():
-            spine.set_color("#dfe6ef")
+            font_kwargs = {"fontproperties": CHINESE_FONT} if CHINESE_FONT else {}
+            ax.set_xlabel(chart_feature_name(selected_feature), color="#566174", labelpad=10, **font_kwargs)
+            ax.set_ylabel(y_label, color="#566174", labelpad=10, **font_kwargs)
+            ax.set_title(
+                f"单因素响应趋势 · {selected_target}",
+                color="#212633",
+                pad=14,
+                fontweight="bold",
+                **font_kwargs,
+            )
 
-        legend = ax.legend(frameon=False, loc="lower center", bbox_to_anchor=(.5, -.30), ncol=2)
-        for text in legend.get_texts():
-            text.set_color("#4f596b")
+            ax.grid(axis="y", alpha=.55, color="#e4eaf3", linestyle="--", linewidth=.8)
+            ax.grid(axis="x", alpha=.3, color="#eef2f7", linestyle=":", linewidth=.7)
+            ax.tick_params(colors="#778296", labelsize=9)
+            for spine in ax.spines.values():
+                spine.set_color("#dfe6ef")
 
-        fig.tight_layout(rect=(0, .05, 1, 1))
-        st.pyplot(fig, use_container_width=True)
-        plt.close(fig)
-    except Exception:
-        st.warning("响应曲线生成失败，请检查模型与输入特征是否匹配。")
+            if CHINESE_FONT:
+                for tick_label in ax.get_xticklabels() + ax.get_yticklabels():
+                    tick_label.set_fontproperties(CHINESE_FONT)
+                legend = ax.legend(
+                    frameon=False,
+                    loc="lower center",
+                    bbox_to_anchor=(.5, -.30),
+                    ncol=2,
+                    prop=CHINESE_FONT,
+                )
+            else:
+                legend = ax.legend(
+                    frameon=False,
+                    loc="lower center",
+                    bbox_to_anchor=(.5, -.30),
+                    ncol=2,
+                )
+            for legend_text in legend.get_texts():
+                legend_text.set_color("#4f596b")
 
-    st.markdown("</div>", unsafe_allow_html=True)
+            fig.tight_layout(rect=(0, .05, 1, 1))
+            st.pyplot(fig, use_container_width=True)
+            plt.close(fig)
+        except Exception as exc:
+            st.warning("响应曲线生成失败，请检查模型与输入特征是否匹配。")
+            st.caption(str(exc))
 
 with snapshot_col:
-    st.markdown('<div id="result-export" class="white-card section-anchor">', unsafe_allow_html=True)
-    st.markdown("#### AI 推理快照")
-    st.caption("记录本次输入和预测结果，便于导出及实验对照。")
+    st.markdown('<div id="result-export" class="section-anchor"></div>', unsafe_allow_html=True)
+    with st.container(border=True):
+        st.markdown("#### AI 推理快照")
+        st.caption("记录本次输入和预测结果，便于导出及实验对照。")
 
-    for col in feature_cols:
-        st.markdown(
-            f'<div class="summary-row"><span>{display_feature_name(col)}</span><b>{float(input_df[col].iloc[0]):.3g}</b></div>',
-            unsafe_allow_html=True,
-        )
-    if pred_wear is not None:
-        st.markdown(
-            f'<div class="summary-row"><span>已磨损深度（μm）</span><b>{pred_wear:.4f}</b></div>',
-            unsafe_allow_html=True,
-        )
-    if current_thickness is not None:
-        st.markdown(
-            f'<div class="summary-row"><span>当前镀层厚度（μm）</span><b>{current_thickness:.4f}</b></div>',
-            unsafe_allow_html=True,
-        )
-    if pred_friction is not None:
-        st.markdown(
-            f'<div class="summary-row"><span>平均摩擦系数</span><b>{pred_friction:.4f}</b></div>',
-            unsafe_allow_html=True,
-        )
+        for col in feature_cols:
+            st.markdown(
+                f'<div class="summary-row"><span>{display_feature_name(col)}</span><b>{float(input_df[col].iloc[0]):.3g}</b></div>',
+                unsafe_allow_html=True,
+            )
+        if pred_wear is not None:
+            st.markdown(
+                f'<div class="summary-row"><span>已磨损深度（μm）</span><b>{pred_wear:.4f}</b></div>',
+                unsafe_allow_html=True,
+            )
+        if current_thickness is not None:
+            st.markdown(
+                f'<div class="summary-row"><span>当前镀层厚度（μm）</span><b>{current_thickness:.4f}</b></div>',
+                unsafe_allow_html=True,
+            )
+        if pred_friction is not None:
+            st.markdown(
+                f'<div class="summary-row"><span>平均摩擦系数</span><b>{pred_friction:.4f}</b></div>',
+                unsafe_allow_html=True,
+            )
 
-    result_df = input_df.rename(columns={c: display_feature_name(c) for c in input_df.columns}).copy()
-    if pred_wear is not None:
-        result_df["预测已磨损深度 μm"] = pred_wear
-    if current_thickness is not None:
-        result_df["预测当前镀层厚度 μm"] = current_thickness
-    if pred_friction is not None:
-        result_df["预测平均摩擦系数"] = pred_friction
+        result_df = input_df.rename(columns={c: display_feature_name(c) for c in input_df.columns}).copy()
+        if pred_wear is not None:
+            result_df["预测已磨损深度 μm"] = pred_wear
+        if current_thickness is not None:
+            result_df["预测当前镀层厚度 μm"] = current_thickness
+        if pred_friction is not None:
+            result_df["预测平均摩擦系数"] = pred_friction
 
-    csv = result_df.to_csv(index=False, encoding="utf-8-sig").encode("utf-8-sig")
-    st.write("")
-    st.download_button(
-        "下载 AI 推理结果 CSV",
-        csv,
-        file_name="ai_prediction_result.csv",
-        mime="text/csv",
-        use_container_width=True,
-    )
-    st.markdown("</div>", unsafe_allow_html=True)
+        csv = result_df.to_csv(index=False, encoding="utf-8-sig").encode("utf-8-sig")
+        st.write("")
+        st.download_button(
+            "下载 AI 推理结果 CSV",
+            csv,
+            file_name="ai_prediction_result.csv",
+            mime="text/csv",
+            use_container_width=True,
+        )
 
 st.markdown(
-    '<div class="footer">AI MATERIALS INTELLIGENCE · GREEN PROCESS · CO₂ REDUCTION · 2026</div>',
+    '<div class="footer">AI 材料智能预测 · 绿色工艺分析 · 节能减排辅助决策 · 2026</div>',
     unsafe_allow_html=True,
 )
