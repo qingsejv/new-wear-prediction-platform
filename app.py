@@ -1,5 +1,6 @@
 
 from pathlib import Path
+import base64
 import urllib.request
 
 import joblib
@@ -12,6 +13,22 @@ from matplotlib.ticker import FormatStrFormatter, MaxNLocator
 
 BASE_DIR = Path(__file__).resolve().parent
 MODEL_PATH = BASE_DIR / "models" / "friction_wear_model.joblib"
+
+HERO_BG_PATH = BASE_DIR / "assets" / "twin_roll_ai_background.png"
+
+
+def load_background_data_uri(path):
+    """读取本地背景图片并转换为CSS可使用的数据地址。"""
+    try:
+        if not path.exists():
+            return ""
+        encoded = base64.b64encode(path.read_bytes()).decode("utf-8")
+        return f"data:image/png;base64,{encoded}"
+    except Exception:
+        return ""
+
+
+HERO_BG_URI = load_background_data_uri(HERO_BG_PATH)
 
 PLATFORM_NAME = "AI驱动双辊薄带连铸镀层智能预测系统"
 SUBTITLE = "面向镀铬层摩擦磨损行为的小样本推理、低碳工况分析与节能减排优化"
@@ -221,8 +238,8 @@ def tight_y_limits(values, current_value=None, target_name=""):
 
 
 # ---------------- Theme ----------------
-st.markdown(
-    """
+
+theme_css = """
 <style>
 :root{
   --primary:#1769ff;
@@ -246,9 +263,9 @@ html,body,.stApp,[class*="css"]{
 }
 .stApp{
   background:
-    radial-gradient(circle at 83% 0%, rgba(67,139,255,.12), transparent 27rem),
-    radial-gradient(circle at 10% 35%, rgba(116,92,255,.08), transparent 25rem),
-    #f5f8fc;
+    radial-gradient(circle at 86% 2%, rgba(42,119,255,.14), transparent 30rem),
+    radial-gradient(circle at 9% 38%, rgba(91,102,220,.08), transparent 26rem),
+    linear-gradient(180deg,#f4f7fc 0%,#eef4fb 100%);
   color:var(--ink);
 }
 [data-testid="stHeader"]{background:transparent;height:0;}
@@ -290,11 +307,34 @@ html,body,.stApp,[class*="css"]{
 }
 
 .hero-shell{
+  position:relative;
+  overflow:hidden;
   margin:0 -2.2rem;
   padding:42px 2.2rem 0;
   background:
-    linear-gradient(180deg,rgba(237,245,255,.98),rgba(250,252,255,.96)),
-    radial-gradient(circle at 82% 10%,rgba(71,141,255,.22),transparent 32%);
+    linear-gradient(
+      90deg,
+      rgba(238,245,255,.97) 0%,
+      rgba(235,243,255,.93) 30%,
+      rgba(226,238,255,.74) 52%,
+      rgba(11,48,107,.24) 73%,
+      rgba(3,29,75,.12) 100%
+    ),
+    url("__HERO_BG_URI__") center right / cover no-repeat;
+  box-shadow:inset 0 -1px 0 rgba(219,228,242,.90);
+}
+.hero-shell:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.12),rgba(224,237,255,.08)),
+    radial-gradient(circle at 18% 48%,rgba(255,255,255,.72),transparent 31rem);
+}
+.hero-shell > *{
+  position:relative;
+  z-index:1;
 }
 .hero{
   position:relative;overflow:hidden;min-height:360px;
@@ -303,21 +343,38 @@ html,body,.stApp,[class*="css"]{
   padding:44px 52px 34px;
 }
 .hero:before{
-  content:"";position:absolute;right:-100px;top:-160px;width:620px;height:620px;border-radius:50%;
-  background:
-    radial-gradient(circle,rgba(76,148,255,.24),rgba(114,107,255,.08) 42%,transparent 70%);
+  content:"";
+  position:absolute;
+  right:-120px;
+  top:-170px;
+  width:620px;
+  height:620px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(39,132,255,.18),rgba(53,104,215,.05) 48%,transparent 72%);
+  pointer-events:none;
 }
 .hero:after{
-  content:"";position:absolute;inset:0;pointer-events:none;opacity:.38;
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  opacity:.20;
   background-image:
-    linear-gradient(120deg, transparent 0 60%, rgba(255,255,255,.9) 63%, transparent 66%),
-    radial-gradient(circle at 80% 20%,rgba(255,255,255,.9) 0 2px,transparent 3px);
-  background-size:auto,80px 80px;
+    linear-gradient(120deg,transparent 0 61%,rgba(157,216,255,.34) 64%,transparent 67%),
+    radial-gradient(circle at 80% 20%,rgba(130,212,255,.92) 0 1.5px,transparent 3px);
+  background-size:auto,92px 92px;
 }
-.hero-copy{position:relative;z-index:2;align-self:center;}
+.hero-copy{
+  position:relative;
+  z-index:2;
+  align-self:center;
+  padding:20px 22px 22px 0;
+  border-radius:22px;
+  text-shadow:0 1px 0 rgba(255,255,255,.65);
+}
 .eyebrow{
   display:inline-flex;align-items:center;gap:9px;padding:7px 12px;border-radius:999px;
-  background:#eaf1ff;color:#366ce8;border:1px solid #d9e6ff;
+  background:rgba(234,241,255,.88);color:#285fd1;border:1px solid rgba(210,226,255,.92);backdrop-filter:blur(8px);
   font-size:.74rem;font-weight:900;letter-spacing:.08em;
 }
 .eyebrow-dot{width:8px;height:8px;border-radius:50%;background:#487bff;box-shadow:0 0 0 5px rgba(72,123,255,.13);}
@@ -344,8 +401,8 @@ html,body,.stApp,[class*="css"]{
 .hero-visual{position:relative;z-index:2;display:grid;place-items:center;min-height:280px;}
 .visual-panel{
   width:100%;max-width:520px;min-height:260px;border-radius:26px;padding:24px;
-  background:rgba(255,255,255,.66);border:1px solid rgba(255,255,255,.95);
-  box-shadow:0 28px 70px rgba(66,106,174,.18);backdrop-filter:blur(14px);
+  background:rgba(255,255,255,.72);border:1px solid rgba(255,255,255,.88);
+  box-shadow:0 28px 72px rgba(4,35,91,.27);backdrop-filter:blur(16px) saturate(115%);
   transform:perspective(900px) rotateY(-5deg) rotateX(2deg);
 }
 .visual-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
@@ -360,7 +417,7 @@ html,body,.stApp,[class*="css"]{
 
 .promo-row{
   display:grid;grid-template-columns:repeat(4,1fr);
-  background:rgba(255,255,255,.92);border-top:1px solid #eef2f8;border-bottom:1px solid #eef2f8;
+  background:rgba(255,255,255,.95);border-top:1px solid rgba(230,236,246,.92);border-bottom:1px solid rgba(230,236,246,.95);backdrop-filter:blur(12px);
 }
 .promo-item{padding:23px 26px;display:flex;gap:14px;min-height:112px;align-items:flex-start;}
 .promo-item + .promo-item{border-left:1px solid #edf1f7;}
@@ -475,9 +532,16 @@ button[kind="secondary"]{border-radius:10px!important;background:#fff!important;
   .hero-actions{flex-direction:column}.hero-btn{width:100%}
 }
 </style>
-""",
-    unsafe_allow_html=True,
-)
+"""
+if HERO_BG_URI:
+    theme_css = theme_css.replace("__HERO_BG_URI__", HERO_BG_URI)
+else:
+    theme_css = theme_css.replace(
+        'url("__HERO_BG_URI__") center right / cover no-repeat',
+        'linear-gradient(135deg,#eaf3ff 0%,#d8e9ff 58%,#3d72c7 100%)'
+    )
+
+st.markdown(theme_css, unsafe_allow_html=True)
 
 # ---------------- Header ----------------
 st.markdown(
